@@ -16,6 +16,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Arrays;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
@@ -62,16 +63,32 @@ public abstract class BukkitBuycraftPlatformBase implements IBuycraftPlatform {
         Bukkit.getScheduler().runTaskLater(plugin, runnable, unit.toMillis(time) / 50);
     }
 
-    private Player getPlayer(QueuedPlayer player) {
-        if (player.getUuid() != null && (plugin.getServer().getOnlineMode() || plugin.getConfiguration().isBungeeCord())) {
-            return plugin.getServer().getPlayer(UuidUtil.mojangUuidToJavaUuid(player.getUuid()));
-        }
-        return plugin.getServer().getPlayerExact(player.getName());
+    public Player getPlayer(final QueuedPlayer player) {
+        Player searchPlayer = plugin.getServer().getPlayerExact(player.getName());
+
+        if (searchPlayer == null)
+            searchPlayer = plugin.getServer().getPlayerExact("." + player.getName());
+        return searchPlayer;
+    }
+
+    @Override
+    public boolean isPlayerOnline(String playerExactName) {
+        return playerExactName != null && plugin.getServer().getPlayerExact(playerExactName) != null;
     }
 
     @Override
     public boolean isPlayerOnline(QueuedPlayer player) {
         return getPlayer(player) != null;
+    }
+
+    @Override
+    public UUID getPlayerUUID(String playerExactName) {
+        final Player player;
+
+        if (playerExactName == null)
+            return null;
+        player = plugin.getServer().getPlayerExact(playerExactName);
+        return player.getUniqueId();
     }
 
     @Override

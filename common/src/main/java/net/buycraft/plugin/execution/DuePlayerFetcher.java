@@ -144,7 +144,7 @@ public class DuePlayerFetcher implements Runnable {
         lock.lock();
         try {
             // Using Locale.US as servers can sometimes have other locales in use.
-            return due.remove(name.toLowerCase(Locale.US));
+            return due.remove(name.replaceFirst("\\.", "").toLowerCase(Locale.US));
         } finally {
             lock.unlock();
         }

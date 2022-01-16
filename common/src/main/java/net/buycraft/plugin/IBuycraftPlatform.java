@@ -6,6 +6,7 @@ import net.buycraft.plugin.execution.placeholder.PlaceholderManager;
 import net.buycraft.plugin.execution.strategy.CommandExecutor;
 import net.buycraft.plugin.platform.PlatformInformation;
 
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
@@ -70,10 +71,24 @@ public interface IBuycraftPlatform {
     /**
      * Determine whether or not the specified {@link QueuedPlayer} is online.
      *
+     * @param playerExactName the player's name to check
+     * @return whether or not the player is online
+     */
+    default boolean isPlayerOnline(String playerExactName) {
+        return false;
+    }
+
+    /**
+     * Determine whether or not the specified {@link QueuedPlayer} is online.
+     *
      * @param player the player to check
      * @return whether or not the player is online
      */
     boolean isPlayerOnline(QueuedPlayer player);
+
+    default UUID getPlayerUUID(String playerExactName) {
+        return null;
+    }
 
     /**
      * Determines the number of free inventory slots available for the specified {@link QueuedPlayer}.

@@ -31,8 +31,7 @@ public class PlayerCommandExecutor implements Runnable {
         platform.log(Level.INFO, String.format("Fetched %d commands for player '%s'.", information.getCommands().size(), player.getName()));
 
         // Queue commands for later.
-        for (QueuedCommand command : information.getCommands()) {
+        for (QueuedCommand command : information.getCommands()) 
             platform.getExecutor().queue(new ToRunQueuedCommand(player, command, true));
-        }
     }
 }

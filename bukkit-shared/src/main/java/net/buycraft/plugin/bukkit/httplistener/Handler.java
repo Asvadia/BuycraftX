@@ -17,6 +17,7 @@ import net.buycraft.plugin.data.QueuedPlayer;
 import net.buycraft.plugin.execution.strategy.ToRunQueuedCommand;
 
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 class Handler extends SimpleChannelInboundHandler<FullHttpRequest> {
@@ -66,11 +67,26 @@ class Handler extends SimpleChannelInboundHandler<FullHttpRequest> {
         for (JsonElement command : this.body) {
             if (command instanceof JsonObject) {
                 JsonObject commandObject = command.getAsJsonObject();
+                System.out.println("DEBUG: " + commandObject.toString());
+                UUID rawUUID;
                 String uuid = commandObject.get("username").getAsString().replace("-", "");
                 if (!plugin.getServerInformation().getAccount().isOnlineMode()) {
                     uuid = null;
                 }
-                QueuedPlayer qp = new QueuedPlayer(playerId, commandObject.get("username_name").getAsString(), uuid);
+                String userName = commandObject.get("username_name").getAsString();
+                if (userName != null) {
+                    if (this.plugin.getPlatform().isPlayerOnline("." + userName)) {
+                        userName = "." + userName;
+                        rawUUID = this.plugin.getPlatform().getPlayerUUID(userName);
+                        if (rawUUID != null)
+                            uuid = rawUUID.toString().replace("-", "");
+                    } else {
+                        rawUUID = this.plugin.getPlatform().getPlayerUUID(userName);
+                        if (rawUUID != null)
+                            uuid = rawUUID.toString().replace("-", "");
+                    }
+                }
+                QueuedPlayer qp = new QueuedPlayer(playerId, userName, uuid);
                 Map<String, Integer> map = new ConcurrentHashMap<String, Integer>();
                 map.put("delay", commandObject.get("delay").getAsInt());
 

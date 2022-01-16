@@ -69,6 +69,11 @@ public class StandaloneBuycraftRunner {
         }
 
         @Override
+        public boolean isPlayerOnline(String playerExactName) {
+            return false;
+        }
+
+        @Override
         public boolean isPlayerOnline(QueuedPlayer player) {
             return determiner.isPlayerOnline(player);
         }

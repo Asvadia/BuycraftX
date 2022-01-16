@@ -1,6 +1,8 @@
 package net.buycraft.plugin.bukkit.util.placeholder;
 
 import net.buycraft.plugin.UuidUtil;
+import net.buycraft.plugin.bukkit.BukkitBuycraftPlatformBase;
+import net.buycraft.plugin.bukkit.BuycraftPluginBase;
 import net.buycraft.plugin.data.QueuedCommand;
 import net.buycraft.plugin.data.QueuedPlayer;
 import net.buycraft.plugin.execution.placeholder.Placeholder;
@@ -15,7 +17,8 @@ public class BukkitNamePlaceholder implements Placeholder {
     @Override
     public String replace(String command, QueuedPlayer player, QueuedCommand queuedCommand) {
         if (player.getUuid() == null || player.getUuid().equals("")) {
-            return REPLACE_NAME.matcher(command).replaceAll(player.getName());
+            BukkitBuycraftPlatformBase platform = ((BuycraftPluginBase) Bukkit.getPluginManager().getPlugin("BuyCraftX")).getPlatform();
+            return REPLACE_NAME.matcher(command).replaceAll(platform.getPlayer(player).getName());
         }
 
         OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UuidUtil.mojangUuidToJavaUuid(player.getUuid()));
